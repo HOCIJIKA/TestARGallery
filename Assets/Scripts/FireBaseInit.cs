@@ -10,7 +10,7 @@ public class FireBaseInit : MonoBehaviour
 {
     public UnityEvent OnFireBaseInitialized = new UnityEvent();
 
-    private async void Awake()
+    private async void Start()
     {
         var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
         if (dependencyStatus == DependencyStatus.Available)

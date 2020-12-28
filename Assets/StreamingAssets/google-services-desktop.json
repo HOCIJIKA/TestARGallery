@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "670475620950",
+    "firebase_url": "https://argallery-77cc7-default-rtdb.firebaseio.com",
+    "project_id": "argallery-77cc7",
+    "storage_bucket": "argallery-77cc7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670475620950:android:41cbcc0661fb43cbf561f7",
+        "android_client_info": {
+          "package_name": "com.TestCompany.TestARGallery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "670475620950-olveouqh45nb3ntripk3cre6ern3a60v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvMpBUc0Vg3aA9sX6A9VtUVzQ0WnE0uNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "670475620950-olveouqh45nb3ntripk3cre6ern3a60v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
