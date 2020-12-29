@@ -1,86 +1,53 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.ARSubsystems;
-using UnityEngine.XR;
 using System;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using easyar;
 
 public class CorrectARLiblary : MonoBehaviour
 {
-    [SerializeField] private Text currentImageText;
-    [SerializeField] private int maxNumberOfMovingImages;
-    [SerializeField] private GameObject prefabOnTrack;
-    [SerializeField] private Vector3 vector3 = new Vector3(0.1f, 0.1f, 0.1f);
-    [SerializeField] private XRReferenceImageLibrary runtimeImageLibrary;
-    [SerializeField] private XRImageTrackingSubsystem subsystem;
-    [SerializeField] private Texture2D texture2D;
+    [SerializeField] private Vector3 addDislocation;
+    [SerializeField] private int countImageTarget;
+    [SerializeField] private GameObject imageTargetPref;
+    [SerializeField] private ImageTrackerFrameFilter imageTracker;
+    [SerializeField] private GameObject OBJ;// для тесту, замінити на Canvas(?) в якому буде інфа
 
-    private ARTrackedImageManager trackedImageManager;
 
-    private void Start()
+    private static CorrectARLiblary instance;
+    public static CorrectARLiblary Instance => instance;
+
+
+    private void Awake()
     {
-        
-        StartCoroutine(DelayStart());
+        if (instance == null)
+            instance = this;
+
     }
 
-    private IEnumerator DelayStart()
+    public void Init(string path,string name)
     {
+        var it = Instantiate(imageTargetPref);
+        var itc = it.GetComponent<ImageTargetController>();
+        itc.ImageFileSource.Path = path;
+        itc.ImageFileSource.Name = name;
+        itc.ImageFileSource.Scale = 0.1f;
+        itc.Tracker = imageTracker;
 
-        trackedImageManager = gameObject.GetComponent<ARTrackedImageManager>();
-        yield return new WaitForSeconds(1);
-        //trackedImageManager.subsystem.Start();
-        trackedImageManager.referenceLibrary = trackedImageManager.CreateRuntimeLibrary(runtimeImageLibrary);
-        trackedImageManager.maxNumberOfMovingImages = maxNumberOfMovingImages;
-        trackedImageManager.trackedImagePrefab = prefabOnTrack;
-        trackedImageManager.enabled = true;
-        trackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
-
-        StartCoroutine(AddImageJob());
+        CreateCube(it.transform);
+        //StartCoroutine(DelayActive(it.gameObject));
     }
 
-    private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
-    {
-        foreach (var trackedImage in eventArgs.added)
-            currentImageText.text = trackedImage.referenceImage.name;
-    }
-
-    private void OnDisable()
-    {
-        trackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
-    }
-
-    public IEnumerator AddImageJob()
+    private IEnumerator DelayActive(GameObject obj)
     {
         yield return null;
-
-        var fitstGuid = new SerializableGuid(0, 0);
-        var secondGuid = new SerializableGuid(0, 0);
-
-        XRReferenceImage newImage = new XRReferenceImage(fitstGuid, secondGuid, new Vector2(0.1f, 0.1f), Guid.NewGuid().ToString(),texture2D);
-
-
-        try
-        {
-            Debug.Log(newImage.ToString());
-
-            MutableRuntimeReferenceImageLibrary mutableRuntimeReferenceImageLibrary = trackedImageManager.referenceLibrary as MutableRuntimeReferenceImageLibrary;
-            var jobHandler = mutableRuntimeReferenceImageLibrary.ScheduleAddImageJob(texture2D, Guid.NewGuid().ToString(),0.1f);
-
-            while (!jobHandler.IsCompleted)
-            {
-                Debug.Log("Job Running...");
-            }
-            Debug.Log("Job completed!");
-
-        }
-        catch (Exception e)
-        {
-
-            Debug.Log(e.ToString());
-        }
+        obj.SetActive(true);
     }
 
+    private void CreateCube(Transform parent)
+    {
+        Vector3 vector3 = new Vector3(parent.position.x + addDislocation.x, parent.position.y + addDislocation.y, parent.position.z + addDislocation.y);
+        Instantiate(OBJ, vector3, parent.localRotation, parent);
+    }
 }

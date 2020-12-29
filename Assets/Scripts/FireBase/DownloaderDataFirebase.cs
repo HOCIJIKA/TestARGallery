@@ -4,26 +4,31 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Networking;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.UI;
 
 public class DownloaderDataFirebase : MonoBehaviour
 {
     [SerializeField] private string storageURL;
-    
+    [SerializeField] private Text textEvent;
+    [SerializeField] private Text textNameCurentImage;
     private FirebaseStorage storage;
     private StorageReference storageReference;
     private byte[] fileContents;
     private string pathSaveTexture;
+
+    private List<string> pathRootImages;
+    private List<string> nameImage;
+
     public void Init()
     {
         storage = FirebaseStorage.DefaultInstance;
         storageReference = storage.GetReferenceFromUrl(storageURL);
         Debug.Log(storageReference.Path.ToString());
-        //DownloadFile();
+        DownloadFile();
         //Debug.Log(Application.persistentDataPath);
-        pathSaveTexture = Application.persistentDataPath + "/RootTextures/";
+        pathSaveTexture = Application.persistentDataPath + "/RootTextures";
+        textEvent.text = pathSaveTexture;
         StartCoroutine(SaveFile());
     }
 
@@ -42,6 +47,7 @@ public class DownloaderDataFirebase : MonoBehaviour
                 //Debug.Log(task.Exception.ToString());
                 fileContents = task.Result;
                 Debug.Log("Finished downloading!");
+                textEvent.text = "Finished downloading!";
             }
         });
     }
@@ -55,22 +61,42 @@ public class DownloaderDataFirebase : MonoBehaviour
             Directory.CreateDirectory(pathSaveTexture);
 
             var folder = Path.Combine(pathSaveTexture, storageReference.Name);
+            textNameCurentImage.text = storageReference.Name;
             File.WriteAllBytes(folder, fileContents);
             Debug.Log("Finished saving!");
+            textEvent.text = "Finished saving!";
+            GetAllImage();
+
         }
         else
         {
             yield return new WaitForSeconds(1);
             StartCoroutine(SaveFile());
         }
-
-        GetAllImage();
     }
 
     private void GetAllImage()
     {
         DirectoryInfo directory = new DirectoryInfo(pathSaveTexture);
         FileInfo[] directoryInfo = directory.GetFiles();
+
+        pathRootImages = new List<string>();
+        nameImage = new List<string>();
+
+        for (int i = 0; i < directoryInfo.Length; i++)
+        {
+            //Debug.Log(directoryInfo[i].FullName);
+
+            pathRootImages.Add("");
+            pathRootImages[i] = directoryInfo[i].FullName;
+
+            nameImage.Add("");
+            nameImage[i] = directoryInfo[i].Name;
+
+            Debug.Log(nameImage[i]);
+
+            CorrectARLiblary.Instance.Init(pathRootImages[i], nameImage[i]);
+        }
 
     }
 }
