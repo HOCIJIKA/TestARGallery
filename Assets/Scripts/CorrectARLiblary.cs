@@ -36,13 +36,6 @@ public class CorrectARLiblary : MonoBehaviour
         itc.Tracker = imageTracker;
 
         CreateCube(it.transform);
-        //StartCoroutine(DelayActive(it.gameObject));
-    }
-
-    private IEnumerator DelayActive(GameObject obj)
-    {
-        yield return null;
-        obj.SetActive(true);
     }
 
     private void CreateCube(Transform parent)
