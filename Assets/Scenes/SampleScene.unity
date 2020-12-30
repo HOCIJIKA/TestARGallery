@@ -844,14 +844,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imagesName:
-  - image1
-  - image2
+  - ValentinSerov.jpg
+  - ebd.jpg
+  - losko.jpg
+  - wpapers.jpg
   imagesPath:
-  - image1Path
-  - image2Path
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/ValentinSerov.jpg
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/ebd.jpg
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/losko.jpg
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/wpapers.jpg
   imagesDescription:
   - image1Descr
   - image2Descr
+  - image3Descr
+  - image4Descr
 --- !u!4 &1686867256
 Transform:
   m_ObjectHideFlags: 0
