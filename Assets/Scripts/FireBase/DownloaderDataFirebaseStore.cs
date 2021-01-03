@@ -2,34 +2,37 @@
 using Firebase.Database;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
-using System;
+using System.Threading.Tasks;
 
 public class DownloaderDataFirebaseStore : MonoBehaviour
 {
     [SerializeField] private string storageURL;
     [SerializeField] private Text textEvent;
     [SerializeField] private Text textNameCurentImage;
+    [Header("")]
+    [SerializeField] private List<string> downloadPath;
+    private List<string> downloadName;
+    private List<string> downloadDescription;
 
     private FirebaseStorage storage;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private byte[] fileContents; // все працє коректно крім цього. При збериганні - однакивий масив бай,що призводить тогожсамого зображення в різних картинках.
+    private List<byte[]> listBites;
+    private bool isAllDowndload = false;
     private string pathSaveTexture;
 
     private List<string> pathRootImages;
     private List<string> nameRootImage;
 
-    [SerializeField] private List<string> downloadPath;
-    [SerializeField] private List<string> downloadName;
-    [SerializeField] private List<string> downloadDescription;
+
 
     public void Init()
     {
+        listBites = new List<byte[]>();
         storage = FirebaseStorage.DefaultInstance;
         databaseReference = FirebaseDatabase.DefaultInstance.GetReference("ARGallery");
 
@@ -104,12 +107,22 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
                 else
                 {
                     //Debug.Log(task.Exception.ToString());
-                    fileContents = task.Result;
+                    fileContents = task.Result;                  
+                    AddFile();
                     Debug.Log("Finished downloading :" + downloadPath[i].ToString());
                     textEvent.text = "Finished downloading :" + downloadPath[i].ToString();
                 }
             });
         }
+        isAllDowndload = true;
+        Debug.Log("IsAllDowndload :" + isAllDowndload);
+    }
+
+    private void AddFile()
+    {
+        listBites.Add(fileContents);
+        //yield return null;
+
     }
 
     private IEnumerator SaveFile()
@@ -117,7 +130,7 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
         pathSaveTexture = Application.persistentDataPath + "/RootTextures";
         textEvent.text = pathSaveTexture;
 
-        if (fileContents != null)
+        if (listBites.Count >= 4)
         {
             yield return new WaitForEndOfFrame();
             for (int i = 0; i < downloadPath.Count; i++)
@@ -125,16 +138,17 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
                 Directory.CreateDirectory(pathSaveTexture);
                 var folder = Path.Combine(pathSaveTexture, downloadName[i]);
                 textNameCurentImage.text = storageReference.Name;
-                File.WriteAllBytes(folder, fileContents);
+                File.WriteAllBytes(folder, listBites[i]);
                 Debug.Log("Finished saving!");
                 textEvent.text = "Finished saving!";
+                yield return new WaitForEndOfFrame();
             }
 
             GetAllImage();
         }
         else
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitUntil(() => isAllDowndload);
             StartCoroutine(SaveFile());
         }
     }
