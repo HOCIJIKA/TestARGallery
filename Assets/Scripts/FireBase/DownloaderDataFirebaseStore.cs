@@ -10,9 +10,6 @@ using System.Threading.Tasks;
 public class DownloaderDataFirebaseStore : MonoBehaviour
 {
     [SerializeField] private string storageURL;
-    [SerializeField] private Text textEvent;
-    [SerializeField] private Text textNameCurentImage;
-    [Header("")]
     [SerializeField] private List<string> downloadPath;
     private List<string> downloadName;
     private List<string> downloadDescription;
@@ -37,12 +34,8 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
         databaseReference = FirebaseDatabase.DefaultInstance.GetReference("ARGallery");
 
         pathSaveTexture = Application.persistentDataPath + "/RootTextures";
-        textEvent.text = pathSaveTexture;
 
         UpdateDataInfo();
-
-        //DownloadFile();
-
         StartCoroutine(SaveFile());
     }
 
@@ -52,41 +45,28 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
         downloadName = new List<string>();
         downloadDescription = new List<string>();
 
-        var c = databaseReference.GetValueAsync().ContinueWith(task =>
+        var t = databaseReference.GetValueAsync().ContinueWith(task =>
             {
                 if (task.IsFaulted)
                 {
-                    Debug.LogWarning(task.Exception);
-                    // Handle the error...
                 }
                 else if (task.IsCompleted)
                 {
                     DataSnapshot snapshot = task.Result;
-                    //Debug.Log(snapshot.ChildrenCount);
-                    //Debug.Log(snapshot.Child("Path").Child("0"));
 
                     for (int i = 0; i < snapshot.Child("Path").ChildrenCount; i++)
-                    {
+
                         downloadPath.Add(snapshot.Child("Path").Child(i.ToString()).Value.ToString());
-                        //Debug.Log(downloadPath[i]);
-                    }
                     for (int i = 0; i < snapshot.Child("Name").ChildrenCount; i++)
-                    {
+
                         downloadName.Add(snapshot.Child("Name").Child(i.ToString()).Value.ToString());
-                        //Debug.Log(downloadName[i]);
-                    }
                     for (int i = 0; i < snapshot.Child("Description").ChildrenCount; i++)
-                    {
+
                         downloadDescription.Add(snapshot.Child("Description").Child(i.ToString()).Value.ToString());
-                        //Debug.Log(downloadDescription[i]);
-                    }
-
-
                 }
             });
         StartCoroutine(DownloadFile());
-        Debug.Log(c);
-
+        //Debug.Log(t);
     }
 
     private IEnumerator DownloadFile()
@@ -110,7 +90,6 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
                     fileContents = task.Result;                  
                     AddFile();
                     Debug.Log("Finished downloading :" + downloadPath[i].ToString());
-                    textEvent.text = "Finished downloading :" + downloadPath[i].ToString();
                 }
             });
         }
@@ -128,7 +107,6 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
     private IEnumerator SaveFile()
     {
         pathSaveTexture = Application.persistentDataPath + "/RootTextures";
-        textEvent.text = pathSaveTexture;
 
         if (listBites.Count >= 4)
         {
@@ -137,10 +115,8 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
             {
                 Directory.CreateDirectory(pathSaveTexture);
                 var folder = Path.Combine(pathSaveTexture, downloadName[i]);
-                textNameCurentImage.text = storageReference.Name;
                 File.WriteAllBytes(folder, listBites[i]);
                 Debug.Log("Finished saving!");
-                textEvent.text = "Finished saving!";
                 yield return new WaitForEndOfFrame();
             }
 
@@ -154,7 +130,8 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
     }
 
     private void GetAllImage()
-    {// in directory
+    {
+        // in directory
         DirectoryInfo directory = new DirectoryInfo(pathSaveTexture);
         FileInfo[] directoryInfo = directory.GetFiles();
 
@@ -163,18 +140,12 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
 
         for (int i = 0; i < directoryInfo.Length; i++)
         {
-            //Debug.Log(directoryInfo[i].FullName);
-
-            pathRootImages.Add("");
-            pathRootImages[i] = directoryInfo[i].FullName;
-
-            nameRootImage.Add("");
-            nameRootImage[i] = directoryInfo[i].Name;
+            pathRootImages.Add(directoryInfo[i].FullName);
+            nameRootImage.Add(directoryInfo[i].Name);
 
             Debug.Log(nameRootImage[i]);
 
             CorrectARLiblary.Instance.Init(pathRootImages[i], nameRootImage[i]);
         }
-
     }
 }

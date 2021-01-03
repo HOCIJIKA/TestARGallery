@@ -9,7 +9,7 @@ using System;
 [Serializable]
 public class UploadDataBase : MonoBehaviour
 {
-    // work in PlayMode
+    // works in PlayMode
     public  List<string> imagesName;
     [Space(10)]
     public  List<string> imagesPath;

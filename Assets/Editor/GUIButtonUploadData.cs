@@ -14,7 +14,7 @@ public class GUIButtonUploadData : Editor
 
         UploadDataBase uploadDataBase = (UploadDataBase)target;
         GUILayout.Space(20);
-        GUILayout.Label("Upload data image to Firebase fealtime database");
+        GUILayout.Label("Upload data image to Firebase Realtime Database");
 
         if (GUILayout.Button("Upluad Data Image"))
             uploadDataBase.Upload();
