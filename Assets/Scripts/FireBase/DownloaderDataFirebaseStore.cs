@@ -9,22 +9,28 @@ using System.Threading.Tasks;
 
 public class DownloaderDataFirebaseStore : MonoBehaviour
 {
-    [SerializeField] private string storageURL;
+    //[SerializeField] private string storageURL;
     [Header("")]
     [SerializeField] private List<string> downloadPath;
+
     private List<string> downloadName;
     private List<string> downloadDescription;
-
     private FirebaseStorage storage;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private byte[] fileContents; // все працє коректно крім цього. При збериганні - однакивий масив бай,що призводить тогожсамого зображення в різних картинках.
-    private List<byte[]> listBites;
+    private struct bsx
+    {
+        public byte[] bs;
+        public int id;
+    }
+
+    private List<bsx> listBites;
     private bool isAllDowndload = false;
     private string pathSaveTexture;
-
     private List<string> pathRootImages;
     private List<string> nameRootImage;
+
+    [SerializeField] private List<int> taskTurn;
 
     private static DownloaderDataFirebaseStore instance;
     public static DownloaderDataFirebaseStore Instance => instance;
@@ -39,17 +45,15 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
 
     public void Init()
     {
-        listBites = new List<byte[]>();
+        listBites = new List<bsx>();
+        taskTurn = new List<int>();
         storage = FirebaseStorage.DefaultInstance;
         databaseReference = FirebaseDatabase.DefaultInstance.GetReference("ARGallery");
-
         pathSaveTexture = Application.persistentDataPath + "/RootTextures";
 
         UpdateDataInfo();
-
-        //DownloadFile();
-
         StartCoroutine(SaveFile());
+
     }
 
     public string GetDescription(int index)
@@ -63,94 +67,72 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
         downloadName = new List<string>();
         downloadDescription = new List<string>();
 
-        var c = databaseReference.GetValueAsync().ContinueWith(task =>
+        databaseReference.GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+                Debug.LogWarning(task.Exception);
+            else if (task.IsCompleted)
             {
-                if (task.IsFaulted)
-                {
-                    Debug.LogWarning(task.Exception);
-                    // Handle the error...
-                }
-                else if (task.IsCompleted)
-                {
-                    DataSnapshot snapshot = task.Result;
-                    //Debug.Log(snapshot.ChildrenCount);
-                    //Debug.Log(snapshot.Child("Path").Child("0"));
+                DataSnapshot snapshot = task.Result;
 
-                    for (int i = 0; i < snapshot.Child("Path").ChildrenCount; i++)
-                    {
-                        downloadPath.Add(snapshot.Child("Path").Child(i.ToString()).Value.ToString());
-                        //Debug.Log(downloadPath[i]);
-                    }
-                    for (int i = 0; i < snapshot.Child("Name").ChildrenCount; i++)
-                    {
-                        downloadName.Add(snapshot.Child("Name").Child(i.ToString()).Value.ToString());
-                        //Debug.Log(downloadName[i]);
-                    }
-                    for (int i = 0; i < snapshot.Child("Description").ChildrenCount; i++)
-                    {
-                        downloadDescription.Add(snapshot.Child("Description").Child(i.ToString()).Value.ToString());
-                        //Debug.Log(downloadDescription[i]);
-                    }
+                for (int i = 0; i < snapshot.Child("Path").ChildrenCount; i++)
+                    downloadPath.Add(snapshot.Child("Path").Child(i.ToString()).Value.ToString());
 
+                for (int i = 0; i < snapshot.Child("Name").ChildrenCount; i++)
+                    downloadName.Add(snapshot.Child("Name").Child(i.ToString()).Value.ToString());
 
-                }
-            });
+                for (int i = 0; i < snapshot.Child("Description").ChildrenCount; i++)
+                    downloadDescription.Add(snapshot.Child("Description").Child(i.ToString()).Value.ToString());
+            }
+        });
         StartCoroutine(DownloadFile());
-        Debug.Log(c);
-
     }
 
     private IEnumerator DownloadFile()
     {
         yield return new WaitForSeconds(3);
+
         for (int i = 0; i < downloadPath.Count; i++)
         {
             storageReference = storage.GetReferenceFromUrl(downloadPath[i]);
-            // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
+
             const long maxAllowedSize = 8 * 1024 * 1024;
             storageReference.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task) =>
             {
                 if (task.IsFaulted || task.IsCanceled)
-                {
                     Debug.Log(task.Exception.ToString());
-                    // Uh-oh, an error occurred!
-                }
                 else
                 {
-                    //Debug.Log(task.Exception.ToString());
-                    fileContents = task.Result;                  
-                    AddFile();
-                    Debug.Log("Finished downloading :" + downloadPath[i].ToString());
+                    listBites.Add(new bsx() { bs = task.Result, id = task.Id });
+                    //Debug.Log("Finished downloading :" + downloadPath[i].ToString());
                 }
             });
         }
         isAllDowndload = true;
+
+
         Debug.Log("IsAllDowndload :" + isAllDowndload);
-    }
-
-    private void AddFile()
-    {
-        listBites.Add(fileContents);
-        //yield return null;
-
     }
 
     private IEnumerator SaveFile()
     {
         pathSaveTexture = Application.persistentDataPath + "/RootTextures";
 
+        //yield return new WaitUntil(() => isAllDowndload);
+
         if (listBites.Count >= 4)
         {
-            yield return new WaitForEndOfFrame();
-            for (int i = 0; i < downloadPath.Count; i++)
+            yield return new WaitForSeconds(2);
+            foreach (var item in listBites)
             {
+                
                 Directory.CreateDirectory(pathSaveTexture);
-                var folder = Path.Combine(pathSaveTexture, downloadName[i]);
-                File.WriteAllBytes(folder, listBites[i]);
+                var folder = Path.Combine(pathSaveTexture, downloadName[item.id -1]);
+                File.WriteAllBytes(folder, item.bs);
                 Debug.Log("Finished saving!");
-                yield return new WaitForEndOfFrame();
             }
 
+            listBites.Clear();
             GetAllImage();
         }
         else
@@ -170,13 +152,8 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
 
         for (int i = 0; i < directoryInfo.Length; i++)
         {
-            //Debug.Log(directoryInfo[i].FullName);
-
-            pathRootImages.Add("");
-            pathRootImages[i] = directoryInfo[i].FullName;
-
-            nameRootImage.Add("");
-            nameRootImage[i] = directoryInfo[i].Name;
+            pathRootImages.Add(directoryInfo[i].FullName);
+            nameRootImage.Add(directoryInfo[i].Name);
 
             Debug.Log(nameRootImage[i]);
 

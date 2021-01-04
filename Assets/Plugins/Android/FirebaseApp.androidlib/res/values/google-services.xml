@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id" xmlns:tools="http://schemas.android.com/tools">
-  <string name="firebase_database_url" translatable="false">https://argallery-77cc7-default-rtdb.firebaseio.com</string>
-  <string name="gcm_defaultSenderId" translatable="false">670475620950</string>
-  <string name="google_storage_bucket" translatable="false">argallery-77cc7.appspot.com</string>
-  <string name="project_id" translatable="false">argallery-77cc7</string>
-  <string name="google_api_key" translatable="false">AIzaSyCvMpBUc0Vg3aA9sX6A9VtUVzQ0WnE0uNk</string>
-  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCvMpBUc0Vg3aA9sX6A9VtUVzQ0WnE0uNk</string>
-  <string name="google_app_id" translatable="false">1:670475620950:android:41cbcc0661fb43cbf561f7</string>
-  <string name="default_web_client_id" translatable="false">670475620950-olveouqh45nb3ntripk3cre6ern3a60v.apps.googleusercontent.com</string>
+  <string name="firebase_database_url" translatable="false">https://testargallery2-default-rtdb.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">901095171101</string>
+  <string name="google_storage_bucket" translatable="false">testargallery2.appspot.com</string>
+  <string name="project_id" translatable="false">testargallery2</string>
+  <string name="google_api_key" translatable="false">AIzaSyA2u6XXOAFdBhE6kMLFidHwc4huF67s6nA</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyA2u6XXOAFdBhE6kMLFidHwc4huF67s6nA</string>
+  <string name="google_app_id" translatable="false">1:901095171101:android:e604ef1dcadcd664f912f4</string>
+  <string name="default_web_client_id" translatable="false">901095171101-c67ugb0q99g9jgek5hpgd14tmsr5qjtd.apps.googleusercontent.com</string>
 </resources>
