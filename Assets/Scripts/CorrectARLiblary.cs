@@ -26,7 +26,7 @@ public class CorrectARLiblary : MonoBehaviour
 
     }
 
-    public void Init(string path,string name)
+    public void Init(string path,string name, int index)
     {
         var it = Instantiate(imageTargetPref);
         var itc = it.GetComponent<ImageTargetController>();
@@ -35,12 +35,13 @@ public class CorrectARLiblary : MonoBehaviour
         itc.ImageFileSource.Scale = 0.1f;
         itc.Tracker = imageTracker;
 
-        CreateCube(it.transform);
+        CreateCube(it.transform, index);
     }
 
-    private void CreateCube(Transform parent)
+    private void CreateCube(Transform parent, int index)
     {
         Vector3 vector3 = new Vector3(parent.position.x + addDislocation.x, parent.position.y + addDislocation.y, parent.position.z + addDislocation.y);
-        Instantiate(OBJ, vector3, parent.localRotation, parent);
+        var obj = Instantiate(OBJ, vector3, parent.localRotation, parent);
+        obj.GetComponent<PictureInfo>().SetTextInfo(index);
     }
 }

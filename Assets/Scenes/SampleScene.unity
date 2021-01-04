@@ -450,6 +450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storageURL: gs://argallery-77cc7.appspot.com/ARGalleryImage/Valentin_Serov_-_Devochka_s_persikami._Portret_V.S.Mamontovoi-_-_Google_Art_Project.jpg
+  saver: {fileID: 8609766666081724627, guid: 85227ac3548af92429ca6acccc388f12, type: 3}
   downloadPath: []
 --- !u!114 &640229954
 MonoBehaviour:
@@ -871,20 +872,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imagesName:
-  - ValentinSerov.jpg
-  - ebd.jpg
-  - losko.jpg
-  - wpapers.jpg
+  - Girl_with_Peaches._Valentin_Serov.jpg
+  - Girl_with_a_Pearl_Earring.Johannes_Vermeer.jpg
+  - The_Persistence_of_Memory._Salvador_Dali.jpg
+  - The_Starry_Night_Vincent_van_Gogh.jpg
   imagesPath:
-  - gs://argallery-77cc7.appspot.com/ARGalleryImage/ValentinSerov.jpg
-  - gs://argallery-77cc7.appspot.com/ARGalleryImage/ebd.jpg
-  - gs://argallery-77cc7.appspot.com/ARGalleryImage/losko.jpg
-  - gs://argallery-77cc7.appspot.com/ARGalleryImage/wpapers.jpg
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/Girl_with_Peaches._Valentin_Serov.jpg
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/Girl_with_a_Pearl_Earring.Johannes_Vermeer.jpg
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/The_Persistence_of_Memory._Salvador_Dali.jpg
+  - gs://argallery-77cc7.appspot.com/ARGalleryImage/The_Starry_Night_Vincent_van_Gogh.jpg
   imagesDescription:
-  - image1Descr
-  - image2Descr
-  - image3Descr
-  - image4Descr
+  - Girl_with_Peaches._Valentin_Serov.jpg
+  - Girl_with_a_Pearl_Earring.Johannes_Vermeer.jpg
+  - The_Persistence_of_Memory._Salvador_Dali.jpg
+  - The_Starry_Night_Vincent_van_Gogh.jpg
 --- !u!4 &1686867256
 Transform:
   m_ObjectHideFlags: 0
