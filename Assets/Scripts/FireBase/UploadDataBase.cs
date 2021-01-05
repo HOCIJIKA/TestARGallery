@@ -28,14 +28,10 @@ public class UploadDataBase : MonoBehaviour
     public void Upload()
     {
         DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
-
-
         ImageData imageData = new ImageData();
         string json = JsonUtility.ToJson(imageData);
 
         reference.Child("ARGallery").Child("").SetRawJsonValueAsync(json);
-        //RestClient.Post(reference.ToString() + ".json", imageData);
-        //Debug.Log(reference);
     }
 
     private class ImageData

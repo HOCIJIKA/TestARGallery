@@ -85,7 +85,7 @@ namespace easyar
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void GlobalInitialization()
         {
-            Debug.Log("EasyAR Sense Unity Plugin Version " + EasyARVersion.FullVersion);
+            //Debug.Log("EasyAR Sense Unity Plugin Version " + EasyARVersion.FullVersion);
 #if UNITY_EDITOR
             Log.setLogFunc((LogLevel, msg) =>
             {

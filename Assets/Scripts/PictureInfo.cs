@@ -14,9 +14,7 @@ public class PictureInfo : MonoBehaviour
     private void Awake()
     {
         if (instance ==null)
-        {
             instance = this;
-        }
     }
 
     public void SetTextInfo( int i)

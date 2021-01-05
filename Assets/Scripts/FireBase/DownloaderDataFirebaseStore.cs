@@ -9,21 +9,22 @@ using System.Threading.Tasks;
 
 public class DownloaderDataFirebaseStore : MonoBehaviour
 {
-    private List<string> downloadPath, downloadName , downloadDescription;
-    //private List<string> downloadName;
-    //private List<string> downloadDescription;
     private FirebaseStorage storage;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private bool isAllDowndload = false;
     private string pathSaveTexture;
     private List<string> pathRootImages , nameRootImage;
-    //private List<string> nameRootImage;
     private int counterTask;
     private DirectoryInfo directory;
     FileInfo[] directoryСontent;
-
-
+    private struct imageData 
+    { 
+        public string path; 
+        public string name; 
+        public string description; 
+    }
+    private List<imageData> imageDatas;
 
     private static DownloaderDataFirebaseStore instance;
     public static DownloaderDataFirebaseStore Instance => instance;
@@ -36,6 +37,7 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
 
     public void Init()
     {
+        imageDatas = new List<imageData>();
         storage = FirebaseStorage.DefaultInstance;
         databaseReference = FirebaseDatabase.DefaultInstance.GetReference("ARGallery");
         pathSaveTexture = Application.persistentDataPath + "/RootTextures";
@@ -47,27 +49,18 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
 
     public string GetDescription(int index)
     {
-        return downloadDescription[index];
+        return imageDatas[index].description;
     }
-    public int GetCoutnPath()
+    public int GetCoutnImageData()
     {
-        if (downloadPath != null)
-        {
-            return downloadPath.Count;
-        }
+        if (imageDatas != null)
+            return imageDatas.Count;
         else
-        {
             return 0;
-        }
     }
 
     private void UpdateDataInfo()
     {
-        // get info whit Realtime Database
-        downloadPath = new List<string>();
-        downloadName = new List<string>();
-        downloadDescription = new List<string>();
-
         databaseReference.GetValueAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
@@ -77,15 +70,14 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
                 DataSnapshot snapshot = task.Result;
 
                 for (int i = 0; i < snapshot.Child("Path").ChildrenCount; i++)
-                    downloadPath.Add(snapshot.Child("Path").Child(i.ToString()).Value.ToString());
-
-                for (int i = 0; i < snapshot.Child("Name").ChildrenCount; i++)
-                    downloadName.Add(snapshot.Child("Name").Child(i.ToString()).Value.ToString());
-
-                for (int i = 0; i < snapshot.Child("Description").ChildrenCount; i++)
-                    downloadDescription.Add(snapshot.Child("Description").Child(i.ToString()).Value.ToString());
-
-                //DownloadFile();
+                {
+                    imageDatas.Add(new imageData()
+                    {
+                        path = snapshot.Child("Path").Child(i.ToString()).Value.ToString(),
+                        name = snapshot.Child("Name").Child(i.ToString()).Value.ToString(),
+                        description = snapshot.Child("Description").Child(i.ToString()).Value.ToString()
+                    });
+                }
                 ChakLocalFile();
             }
         });
@@ -93,25 +85,19 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
 
     private void ChakLocalFile()
     {
-        //
-        if (directoryСontent.Length == downloadPath.Count)
-        {
+        if (directoryСontent.Length == imageDatas.Count)
             GetAllImage();
-        }
         else
         {
             foreach (var item in directoryСontent)
-            {
                 File.Delete(item.FullName);
-            }
+
             DownloadFile();
         }
     }
 
     private void GetAllImage()
     {// in directory
-         
-
         pathRootImages = new List<string>();
         nameRootImage = new List<string>();
 
@@ -123,15 +109,12 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
             Debug.Log(nameRootImage[i]);
 
             CreateImageTarget.Instance.Init(pathRootImages[i], nameRootImage[i]);
-        }
-        
+        }      
     }
 
     private void DownloadFile()
     {
-
-
-        storageReference = storage.GetReferenceFromUrl(downloadPath[counterTask]);
+        storageReference = storage.GetReferenceFromUrl(imageDatas[counterTask].path);
 
         const long maxAllowedSize = 8 * 1024 * 1024;
         storageReference.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task) =>
@@ -140,16 +123,14 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
                 Debug.Log(task.Exception.ToString());
             else
             {
-                var folder = Path.Combine(pathSaveTexture, downloadName[task.Id - 1]);
+                var folder = Path.Combine(pathSaveTexture, imageDatas[task.Id - 1].name);
                 File.WriteAllBytes(folder, task.Result);
                 counterTask++;
 
-                if (counterTask < downloadPath.Count)
+                if (counterTask < imageDatas.Count)
                     DownloadFile();
                 else
-                {
                     GetAllImage();
-                }
             }
         });
     }

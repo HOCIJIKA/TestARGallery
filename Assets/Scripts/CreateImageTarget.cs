@@ -43,7 +43,7 @@ public class CreateImageTarget : MonoBehaviour
 
     private void Update()
     {
-        if (path != null && path.Count >= DownloaderDataFirebaseStore.Instance.GetCoutnPath())
+        if (path != null && path.Count >= DownloaderDataFirebaseStore.Instance.GetCoutnImageData())
         {
             for (int i = 0; i < path.Count; i++)
             {
