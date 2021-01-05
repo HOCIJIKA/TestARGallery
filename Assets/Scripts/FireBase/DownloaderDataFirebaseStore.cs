@@ -14,7 +14,6 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
     private StorageReference storageReference;
     private bool isAllDowndload = false;
     private string pathSaveTexture;
-    private List<string> pathRootImages , nameRootImage;
     private int counterTask;
     private DirectoryInfo directory;
     FileInfo[] directoryСontent;
@@ -98,17 +97,10 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
 
     private void GetAllImage()
     {// in directory
-        pathRootImages = new List<string>();
-        nameRootImage = new List<string>();
-
         for (int i = 0; i < directoryСontent.Length; i++)
         {
-            pathRootImages.Add(directoryСontent[i].FullName);
-            nameRootImage.Add(directoryСontent[i].Name);
-
-            Debug.Log(nameRootImage[i]);
-
-            CreateImageTarget.Instance.Init(pathRootImages[i], nameRootImage[i]);
+            CreateImageTarget.Instance.Init(directoryСontent[i].FullName, directoryСontent[i].Name);
+            Debug.Log(directoryСontent[i].Name);
         }      
     }
 
@@ -127,10 +119,17 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
                 File.WriteAllBytes(folder, task.Result);
                 counterTask++;
 
+                //if (directoryСontent.Length == imageDatas.Count)
+                //    GetAllImage();
+
                 if (counterTask < imageDatas.Count)
                     DownloadFile();
                 else
+                {
+                    directoryСontent = directory.GetFiles();
                     GetAllImage();
+                }
+
             }
         });
     }
