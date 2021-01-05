@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id" xmlns:tools="http://schemas.android.com/tools">
-  <string name="firebase_database_url" translatable="false">https://testargallery2-default-rtdb.firebaseio.com</string>
-  <string name="gcm_defaultSenderId" translatable="false">901095171101</string>
-  <string name="google_storage_bucket" translatable="false">testargallery2.appspot.com</string>
-  <string name="project_id" translatable="false">testargallery2</string>
-  <string name="google_api_key" translatable="false">AIzaSyA2u6XXOAFdBhE6kMLFidHwc4huF67s6nA</string>
-  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyA2u6XXOAFdBhE6kMLFidHwc4huF67s6nA</string>
-  <string name="google_app_id" translatable="false">1:901095171101:android:e604ef1dcadcd664f912f4</string>
-  <string name="default_web_client_id" translatable="false">901095171101-c67ugb0q99g9jgek5hpgd14tmsr5qjtd.apps.googleusercontent.com</string>
+  <string name="firebase_database_url" translatable="false">https://testargallery3-default-rtdb.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">26547347930</string>
+  <string name="google_storage_bucket" translatable="false">testargallery3.appspot.com</string>
+  <string name="project_id" translatable="false">testargallery3</string>
+  <string name="google_api_key" translatable="false">AIzaSyBPPYgpMIkF4pJ4DIhnnw0Xqk-dE5jAihE</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBPPYgpMIkF4pJ4DIhnnw0Xqk-dE5jAihE</string>
+  <string name="google_app_id" translatable="false">1:26547347930:android:2c6bdb770e07986322e0e3</string>
+  <string name="default_web_client_id" translatable="false">26547347930-olomd3bqtlf2a62ricvf6hl9m1v87hjm.apps.googleusercontent.com</string>
 </resources>
