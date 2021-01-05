@@ -85,10 +85,27 @@ public class DownloaderDataFirebaseStore : MonoBehaviour
                 for (int i = 0; i < snapshot.Child("Description").ChildrenCount; i++)
                     downloadDescription.Add(snapshot.Child("Description").Child(i.ToString()).Value.ToString());
 
-                DownloadFile();
-                //GetAllImage();
+                //DownloadFile();
+                ChakLocalFile();
             }
         });
+    }
+
+    private void ChakLocalFile()
+    {
+        //
+        if (directoryСontent.Length == downloadPath.Count)
+        {
+            GetAllImage();
+        }
+        else
+        {
+            foreach (var item in directoryСontent)
+            {
+                File.Delete(item.FullName);
+            }
+            DownloadFile();
+        }
     }
 
     private void GetAllImage()

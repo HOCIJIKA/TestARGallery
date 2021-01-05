@@ -185,7 +185,7 @@ namespace easyar
         /// <summary>
         /// MonoBehaviour Update
         /// </summary>
-        private void Update()
+        private void FixedUpdate()
         {
             if (!Assembly.Ready)
             {
